@@ -1907,6 +1907,9 @@ class Image {
   /** Textual description of the resource; provided by the client when the resource is created. */
   core.String description;
 
+  /** Size of the image when restored onto a disk (in GiB). */
+  core.int diskSizeGb;
+
   /** Unique identifier for the resource; defined by the server (output only). */
   core.String id;
 
@@ -1941,6 +1944,9 @@ class Image {
     }
     if (json.containsKey("description")) {
       description = json["description"];
+    }
+    if (json.containsKey("diskSizeGb")) {
+      diskSizeGb = (json["diskSizeGb"] is core.String) ? core.int.parse(json["diskSizeGb"]) : json["diskSizeGb"];
     }
     if (json.containsKey("id")) {
       id = json["id"];
@@ -1980,6 +1986,9 @@ class Image {
     }
     if (description != null) {
       output["description"] = description;
+    }
+    if (diskSizeGb != null) {
+      output["diskSizeGb"] = diskSizeGb;
     }
     if (id != null) {
       output["id"] = id;
@@ -3947,6 +3956,9 @@ class Project {
   /** Server defined URL for the resource (output only). */
   core.String selfLink;
 
+  /** The location in Cloud Storage and naming method of the daily usage report. */
+  UsageExportLocation usageExportLocation;
+
   /** Create new Project from JSON data */
   Project.fromJson(core.Map json) {
     if (json.containsKey("commonInstanceMetadata")) {
@@ -3972,6 +3984,9 @@ class Project {
     }
     if (json.containsKey("selfLink")) {
       selfLink = json["selfLink"];
+    }
+    if (json.containsKey("usageExportLocation")) {
+      usageExportLocation = new UsageExportLocation.fromJson(json["usageExportLocation"]);
     }
   }
 
@@ -4002,6 +4017,9 @@ class Project {
     }
     if (selfLink != null) {
       output["selfLink"] = selfLink;
+    }
+    if (usageExportLocation != null) {
+      output["usageExportLocation"] = usageExportLocation.toJson();
     }
 
     return output;
@@ -5799,6 +5817,44 @@ class TargetReference {
   }
 
   /** Return String representation of TargetReference */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** The location in Cloud Storage and naming method of the daily usage report. Contains bucket_name and report_name prefix. */
+class UsageExportLocation {
+
+  /** The name of an existing bucket in Cloud Storage where the usage report object is stored. The Google Service Account is granted write access to this bucket. This is simply the bucket name, with no "gs://" or "https://storage.googleapis.com/" in front of it. */
+  core.String bucketName;
+
+  /** An optional prefix for the name of the usage report object stored in bucket_name. If not supplied, defaults to "usage_". The report is stored as a CSV file named _gce_.csv. where  is the day of the usage according to Pacific Time. The prefix should conform to Cloud Storage object naming conventions. */
+  core.String reportNamePrefix;
+
+  /** Create new UsageExportLocation from JSON data */
+  UsageExportLocation.fromJson(core.Map json) {
+    if (json.containsKey("bucketName")) {
+      bucketName = json["bucketName"];
+    }
+    if (json.containsKey("reportNamePrefix")) {
+      reportNamePrefix = json["reportNamePrefix"];
+    }
+  }
+
+  /** Create JSON Object for UsageExportLocation */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (bucketName != null) {
+      output["bucketName"] = bucketName;
+    }
+    if (reportNamePrefix != null) {
+      output["reportNamePrefix"] = reportNamePrefix;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UsageExportLocation */
   core.String toString() => JSON.encode(this.toJson());
 
 }
