@@ -7,6 +7,7 @@ import 'package:google_compute_v1_api/src/console_client.dart';
 import "package:google_compute_v1_api/compute_v1_api_client.dart";
 
 /** API for the Google Compute Engine service. */
+@deprecated
 class Compute extends Client with ConsoleClient {
 
   /** OAuth Scope2: View and manage your Google Compute Engine resources */

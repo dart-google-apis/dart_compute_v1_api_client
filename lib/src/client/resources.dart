@@ -223,6 +223,428 @@ class AddressesResource_ {
   }
 }
 
+class BackendServicesResource_ {
+
+  final Client _client;
+
+  BackendServicesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Deletes the specified BackendService resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [backendService] - Name of the BackendService resource to delete.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> delete(core.String project, core.String backendService, {core.Map optParams}) {
+    var url = "{project}/global/backendServices/{backendService}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (backendService == null) paramErrors.add("backendService is required");
+    if (backendService != null) urlParams["backendService"] = backendService;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "DELETE", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Returns the specified BackendService resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [backendService] - Name of the BackendService resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<BackendService> get(core.String project, core.String backendService, {core.Map optParams}) {
+    var url = "{project}/global/backendServices/{backendService}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (backendService == null) paramErrors.add("backendService is required");
+    if (backendService != null) urlParams["backendService"] = backendService;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new BackendService.fromJson(data));
+  }
+
+  /**
+   * Gets the most recent health check results for this BackendService.
+   *
+   * [request] - ResourceGroupReference to send in this request
+   *
+   * [project]
+   *
+   * [backendService] - Name of the BackendService resource to which the queried instance belongs.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<BackendServiceGroupHealth> getHealth(ResourceGroupReference request, core.String project, core.String backendService, {core.Map optParams}) {
+    var url = "{project}/global/backendServices/{backendService}/getHealth";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (backendService == null) paramErrors.add("backendService is required");
+    if (backendService != null) urlParams["backendService"] = backendService;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new BackendServiceGroupHealth.fromJson(data));
+  }
+
+  /**
+   * Creates a BackendService resource in the specified project using the data included in the request.
+   *
+   * [request] - BackendService to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> insert(BackendService request, core.String project, {core.Map optParams}) {
+    var url = "{project}/global/backendServices";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of BackendService resources available to the specified project.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<BackendServiceList> list(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/global/backendServices";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new BackendServiceList.fromJson(data));
+  }
+
+  /**
+   * Update the entire content of the BackendService resource. This method supports patch semantics.
+   *
+   * [request] - BackendService to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [backendService] - Name of the BackendService resource to update.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> patch(BackendService request, core.String project, core.String backendService, {core.Map optParams}) {
+    var url = "{project}/global/backendServices/{backendService}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (backendService == null) paramErrors.add("backendService is required");
+    if (backendService != null) urlParams["backendService"] = backendService;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "PATCH", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Update the entire content of the BackendService resource.
+   *
+   * [request] - BackendService to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [backendService] - Name of the BackendService resource to update.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> update(BackendService request, core.String project, core.String backendService, {core.Map optParams}) {
+    var url = "{project}/global/backendServices/{backendService}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (backendService == null) paramErrors.add("backendService is required");
+    if (backendService != null) urlParams["backendService"] = backendService;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "PUT", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+}
+
+class DiskTypesResource_ {
+
+  final Client _client;
+
+  DiskTypesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Retrieves the list of disk type resources grouped by scope.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<DiskTypeAggregatedList> aggregatedList(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/aggregated/diskTypes";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new DiskTypeAggregatedList.fromJson(data));
+  }
+
+  /**
+   * Returns the specified disk type resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [zone] - Name of the zone scoping this request.
+   *
+   * [diskType] - Name of the disk type resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<DiskType> get(core.String project, core.String zone, core.String diskType, {core.Map optParams}) {
+    var url = "{project}/zones/{zone}/diskTypes/{diskType}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (diskType == null) paramErrors.add("diskType is required");
+    if (diskType != null) urlParams["diskType"] = diskType;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (zone == null) paramErrors.add("zone is required");
+    if (zone != null) urlParams["zone"] = zone;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new DiskType.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of disk type resources available to the specified project.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [zone] - Name of the zone scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<DiskTypeList> list(core.String project, core.String zone, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/zones/{zone}/diskTypes";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (zone == null) paramErrors.add("zone is required");
+    if (zone != null) urlParams["zone"] = zone;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new DiskTypeList.fromJson(data));
+  }
+}
+
 class DisksResource_ {
 
   final Client _client;
@@ -978,6 +1400,369 @@ class ForwardingRulesResource_ {
     if (project != null) urlParams["project"] = project;
     if (region == null) paramErrors.add("region is required");
     if (region != null) urlParams["region"] = region;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+}
+
+class GlobalAddressesResource_ {
+
+  final Client _client;
+
+  GlobalAddressesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Deletes the specified address resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [address] - Name of the address resource to delete.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> delete(core.String project, core.String address, {core.Map optParams}) {
+    var url = "{project}/global/addresses/{address}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (address == null) paramErrors.add("address is required");
+    if (address != null) urlParams["address"] = address;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "DELETE", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Returns the specified address resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [address] - Name of the address resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Address> get(core.String project, core.String address, {core.Map optParams}) {
+    var url = "{project}/global/addresses/{address}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (address == null) paramErrors.add("address is required");
+    if (address != null) urlParams["address"] = address;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Address.fromJson(data));
+  }
+
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * [request] - Address to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> insert(Address request, core.String project, {core.Map optParams}) {
+    var url = "{project}/global/addresses";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of global address resources.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<AddressList> list(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/global/addresses";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new AddressList.fromJson(data));
+  }
+}
+
+class GlobalForwardingRulesResource_ {
+
+  final Client _client;
+
+  GlobalForwardingRulesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Deletes the specified ForwardingRule resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [forwardingRule] - Name of the ForwardingRule resource to delete.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> delete(core.String project, core.String forwardingRule, {core.Map optParams}) {
+    var url = "{project}/global/forwardingRules/{forwardingRule}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (forwardingRule == null) paramErrors.add("forwardingRule is required");
+    if (forwardingRule != null) urlParams["forwardingRule"] = forwardingRule;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "DELETE", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Returns the specified ForwardingRule resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [forwardingRule] - Name of the ForwardingRule resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<ForwardingRule> get(core.String project, core.String forwardingRule, {core.Map optParams}) {
+    var url = "{project}/global/forwardingRules/{forwardingRule}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (forwardingRule == null) paramErrors.add("forwardingRule is required");
+    if (forwardingRule != null) urlParams["forwardingRule"] = forwardingRule;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new ForwardingRule.fromJson(data));
+  }
+
+  /**
+   * Creates a ForwardingRule resource in the specified project and region using the data included in the request.
+   *
+   * [request] - ForwardingRule to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> insert(ForwardingRule request, core.String project, {core.Map optParams}) {
+    var url = "{project}/global/forwardingRules";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of ForwardingRule resources available to the specified project.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<ForwardingRuleList> list(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/global/forwardingRules";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new ForwardingRuleList.fromJson(data));
+  }
+
+  /**
+   * Changes target url for forwarding rule.
+   *
+   * [request] - TargetReference to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [forwardingRule] - Name of the ForwardingRule resource in which target is to be set.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> setTarget(TargetReference request, core.String project, core.String forwardingRule, {core.Map optParams}) {
+    var url = "{project}/global/forwardingRules/{forwardingRule}/setTarget";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (forwardingRule == null) paramErrors.add("forwardingRule is required");
+    if (forwardingRule != null) urlParams["forwardingRule"] = forwardingRule;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
     if (optParams != null) {
       optParams.forEach((key, value) {
         if (value != null && queryParams[key] == null) {
@@ -2275,6 +3060,51 @@ class InstancesResource_ {
   }
 }
 
+class LicensesResource_ {
+
+  final Client _client;
+
+  LicensesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Returns the specified license resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [license] - Name of the license resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<License> get(core.String project, core.String license, {core.Map optParams}) {
+    var url = "{project}/global/licenses/{license}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (license == null) paramErrors.add("license is required");
+    if (license != null) urlParams["license"] = license;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new License.fromJson(data));
+  }
+}
+
 class MachineTypesResource_ {
 
   final Client _client;
@@ -2631,6 +3461,41 @@ class ProjectsResource_ {
    */
   async.Future<Operation> setCommonInstanceMetadata(Metadata request, core.String project, {core.Map optParams}) {
     var url = "{project}/setCommonInstanceMetadata";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Sets usage export location
+   *
+   * [request] - UsageExportLocation to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> setUsageExportBucket(UsageExportLocation request, core.String project, {core.Map optParams}) {
+    var url = "{project}/setUsageExportBucket";
     var urlParams = new core.Map();
     var queryParams = new core.Map();
 
@@ -3170,6 +4035,207 @@ class SnapshotsResource_ {
     response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
     return response
       .then((data) => new SnapshotList.fromJson(data));
+  }
+}
+
+class TargetHttpProxiesResource_ {
+
+  final Client _client;
+
+  TargetHttpProxiesResource_(Client client) :
+      _client = client;
+
+  /**
+   * Deletes the specified TargetHttpProxy resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [targetHttpProxy] - Name of the TargetHttpProxy resource to delete.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> delete(core.String project, core.String targetHttpProxy, {core.Map optParams}) {
+    var url = "{project}/global/targetHttpProxies/{targetHttpProxy}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (targetHttpProxy == null) paramErrors.add("targetHttpProxy is required");
+    if (targetHttpProxy != null) urlParams["targetHttpProxy"] = targetHttpProxy;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "DELETE", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Returns the specified TargetHttpProxy resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [targetHttpProxy] - Name of the TargetHttpProxy resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<TargetHttpProxy> get(core.String project, core.String targetHttpProxy, {core.Map optParams}) {
+    var url = "{project}/global/targetHttpProxies/{targetHttpProxy}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (targetHttpProxy == null) paramErrors.add("targetHttpProxy is required");
+    if (targetHttpProxy != null) urlParams["targetHttpProxy"] = targetHttpProxy;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new TargetHttpProxy.fromJson(data));
+  }
+
+  /**
+   * Creates a TargetHttpProxy resource in the specified project using the data included in the request.
+   *
+   * [request] - TargetHttpProxy to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> insert(TargetHttpProxy request, core.String project, {core.Map optParams}) {
+    var url = "{project}/global/targetHttpProxies";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of TargetHttpProxy resources available to the specified project.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<TargetHttpProxyList> list(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/global/targetHttpProxies";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new TargetHttpProxyList.fromJson(data));
+  }
+
+  /**
+   * Changes the URL map for TargetHttpProxy.
+   *
+   * [request] - UrlMapReference to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [targetHttpProxy] - Name of the TargetHttpProxy resource whose URL map is to be set.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> setUrlMap(UrlMapReference request, core.String project, core.String targetHttpProxy, {core.Map optParams}) {
+    var url = "{project}/targetHttpProxies/{targetHttpProxy}/setUrlMap";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (targetHttpProxy == null) paramErrors.add("targetHttpProxy is required");
+    if (targetHttpProxy != null) urlParams["targetHttpProxy"] = targetHttpProxy;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
   }
 }
 
@@ -3877,6 +4943,285 @@ class TargetPoolsResource_ {
     response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
     return response
       .then((data) => new Operation.fromJson(data));
+  }
+}
+
+class UrlMapsResource_ {
+
+  final Client _client;
+
+  UrlMapsResource_(Client client) :
+      _client = client;
+
+  /**
+   * Deletes the specified UrlMap resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [urlMap] - Name of the UrlMap resource to delete.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> delete(core.String project, core.String urlMap, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps/{urlMap}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (urlMap == null) paramErrors.add("urlMap is required");
+    if (urlMap != null) urlParams["urlMap"] = urlMap;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "DELETE", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Returns the specified UrlMap resource.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [urlMap] - Name of the UrlMap resource to return.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<UrlMap> get(core.String project, core.String urlMap, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps/{urlMap}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (urlMap == null) paramErrors.add("urlMap is required");
+    if (urlMap != null) urlParams["urlMap"] = urlMap;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new UrlMap.fromJson(data));
+  }
+
+  /**
+   * Creates a UrlMap resource in the specified project using the data included in the request.
+   *
+   * [request] - UrlMap to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> insert(UrlMap request, core.String project, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Retrieves the list of UrlMap resources available to the specified project.
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [filter] - Optional. Filter expression for filtering listed resources.
+   *
+   * [maxResults] - Optional. Maximum count of results to be returned. Maximum value is 500 and default value is 500.
+   *   Default: 500
+   *   Minimum: 0
+   *   Maximum: 500
+   *
+   * [pageToken] - Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<UrlMapList> list(core.String project, {core.String filter, core.int maxResults, core.String pageToken, core.Map optParams}) {
+    var url = "{project}/global/urlMaps";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (filter != null) queryParams["filter"] = filter;
+    if (maxResults != null) queryParams["maxResults"] = maxResults;
+    if (pageToken != null) queryParams["pageToken"] = pageToken;
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "GET", urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new UrlMapList.fromJson(data));
+  }
+
+  /**
+   * Update the entire content of the UrlMap resource. This method supports patch semantics.
+   *
+   * [request] - UrlMap to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [urlMap] - Name of the UrlMap resource to update.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> patch(UrlMap request, core.String project, core.String urlMap, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps/{urlMap}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (urlMap == null) paramErrors.add("urlMap is required");
+    if (urlMap != null) urlParams["urlMap"] = urlMap;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "PATCH", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Update the entire content of the UrlMap resource.
+   *
+   * [request] - UrlMap to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [urlMap] - Name of the UrlMap resource to update.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<Operation> update(UrlMap request, core.String project, core.String urlMap, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps/{urlMap}";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (urlMap == null) paramErrors.add("urlMap is required");
+    if (urlMap != null) urlParams["urlMap"] = urlMap;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "PUT", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new Operation.fromJson(data));
+  }
+
+  /**
+   * Run static validation for the UrlMap. In particular, the tests of the provided UrlMap will be run. Calling this method does NOT create the UrlMap.
+   *
+   * [request] - UrlMapsValidateRequest to send in this request
+   *
+   * [project] - Name of the project scoping this request.
+   *
+   * [urlMap] - Name of the UrlMap resource to be validated as.
+   *
+   * [optParams] - Additional query parameters
+   */
+  async.Future<UrlMapsValidateResponse> validate(UrlMapsValidateRequest request, core.String project, core.String urlMap, {core.Map optParams}) {
+    var url = "{project}/global/urlMaps/{urlMap}/validate";
+    var urlParams = new core.Map();
+    var queryParams = new core.Map();
+
+    var paramErrors = new core.List();
+    if (project == null) paramErrors.add("project is required");
+    if (project != null) urlParams["project"] = project;
+    if (urlMap == null) paramErrors.add("urlMap is required");
+    if (urlMap != null) urlParams["urlMap"] = urlMap;
+    if (optParams != null) {
+      optParams.forEach((key, value) {
+        if (value != null && queryParams[key] == null) {
+          queryParams[key] = value;
+        }
+      });
+    }
+
+    if (!paramErrors.isEmpty) {
+      throw new core.ArgumentError(paramErrors.join(" / "));
+    }
+
+    var response;
+    response = _client.request(url, "POST", body: request.toString(), urlParams: urlParams, queryParams: queryParams);
+    return response
+      .then((data) => new UrlMapsValidateResponse.fromJson(data));
   }
 }
 

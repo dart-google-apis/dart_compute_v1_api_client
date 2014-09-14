@@ -77,7 +77,7 @@ class Address {
   /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
   core.String name;
 
-  /** URL of the region where the address resides (output only). */
+  /** URL of the region where the regional address resides (output only). This field is not applicable to global addresses. */
   core.String region;
 
   /** Server defined URL for the resource (output only). */
@@ -437,6 +437,9 @@ class AttachedDisk {
   /** Type of the resource. */
   core.String kind;
 
+  /** Public visible licenses. */
+  core.List<core.String> licenses;
+
   /** The mode in which to attach this disk, either "READ_WRITE" or "READ_ONLY". */
   core.String mode;
 
@@ -465,6 +468,9 @@ class AttachedDisk {
     }
     if (json.containsKey("kind")) {
       kind = json["kind"];
+    }
+    if (json.containsKey("licenses")) {
+      licenses = json["licenses"].toList();
     }
     if (json.containsKey("mode")) {
       mode = json["mode"];
@@ -499,6 +505,9 @@ class AttachedDisk {
     if (kind != null) {
       output["kind"] = kind;
     }
+    if (licenses != null) {
+      output["licenses"] = licenses.toList();
+    }
     if (mode != null) {
       output["mode"] = mode;
     }
@@ -517,7 +526,7 @@ class AttachedDisk {
 
 }
 
-/** Initialization parameters for the new disk (Mutually exclusive with 'source', can currently only be specified on the boot disk). */
+/** Initialization parameters for the new disk (input-only). Can only be specified on the boot disk or local SSDs. Mutually exclusive with 'source'. */
 class AttachedDiskInitializeParams {
 
   /** Name of the disk (when not provided defaults to the name of the instance). */
@@ -525,6 +534,9 @@ class AttachedDiskInitializeParams {
 
   /** Size of the disk in base-2 GB. */
   core.int diskSizeGb;
+
+  /** URL of the disk type resource describing which disk type to use to create the disk; provided by the client when the disk is created. */
+  core.String diskType;
 
   /** The source image used to create this disk. */
   core.String sourceImage;
@@ -536,6 +548,9 @@ class AttachedDiskInitializeParams {
     }
     if (json.containsKey("diskSizeGb")) {
       diskSizeGb = (json["diskSizeGb"] is core.String) ? core.int.parse(json["diskSizeGb"]) : json["diskSizeGb"];
+    }
+    if (json.containsKey("diskType")) {
+      diskType = json["diskType"];
     }
     if (json.containsKey("sourceImage")) {
       sourceImage = json["sourceImage"];
@@ -552,6 +567,9 @@ class AttachedDiskInitializeParams {
     if (diskSizeGb != null) {
       output["diskSizeGb"] = diskSizeGb;
     }
+    if (diskType != null) {
+      output["diskType"] = diskType;
+    }
     if (sourceImage != null) {
       output["sourceImage"] = sourceImage;
     }
@@ -560,6 +578,326 @@ class AttachedDiskInitializeParams {
   }
 
   /** Return String representation of AttachedDiskInitializeParams */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Message containing information of one individual backend. */
+class Backend {
+
+  /** The balancing mode of this backend, default is UTILIZATION. */
+  core.String balancingMode;
+
+  /** The multiplier (a value between 0 and 1e6) of the max capacity (CPU or RPS, depending on 'balancingMode') the group should serve up to. 0 means the group is totally drained. Default value is 1. Valid range is [0, 1e6]. */
+  core.num capacityScaler;
+
+  /** An optional textual description of the resource, which is provided by the client when the resource is created. */
+  core.String description;
+
+  /** URL of a zonal Cloud Resource View resource. This resource view defines the list of instances that serve traffic. Member virtual machine instances from each resource view must live in the same zone as the resource view itself. No two backends in a backend service are allowed to use same Resource View resource. */
+  core.String group;
+
+  /** The max RPS of the group. Can be used with either balancing mode, but required if RATE mode. For RATE mode, either maxRate or maxRatePerInstance must be set. */
+  core.int maxRate;
+
+  /** The max RPS that a single backed instance can handle. This is used to calculate the capacity of the group. Can be used in either balancing mode. For RATE mode, either maxRate or maxRatePerInstance must be set. */
+  core.num maxRatePerInstance;
+
+  /** Used when 'balancingMode' is UTILIZATION. This ratio defines the CPU utilization target for the group. The default is 0.8. Valid range is [0, 1]. */
+  core.num maxUtilization;
+
+  /** Create new Backend from JSON data */
+  Backend.fromJson(core.Map json) {
+    if (json.containsKey("balancingMode")) {
+      balancingMode = json["balancingMode"];
+    }
+    if (json.containsKey("capacityScaler")) {
+      capacityScaler = json["capacityScaler"];
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("group")) {
+      group = json["group"];
+    }
+    if (json.containsKey("maxRate")) {
+      maxRate = json["maxRate"];
+    }
+    if (json.containsKey("maxRatePerInstance")) {
+      maxRatePerInstance = json["maxRatePerInstance"];
+    }
+    if (json.containsKey("maxUtilization")) {
+      maxUtilization = json["maxUtilization"];
+    }
+  }
+
+  /** Create JSON Object for Backend */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (balancingMode != null) {
+      output["balancingMode"] = balancingMode;
+    }
+    if (capacityScaler != null) {
+      output["capacityScaler"] = capacityScaler;
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (group != null) {
+      output["group"] = group;
+    }
+    if (maxRate != null) {
+      output["maxRate"] = maxRate;
+    }
+    if (maxRatePerInstance != null) {
+      output["maxRatePerInstance"] = maxRatePerInstance;
+    }
+    if (maxUtilization != null) {
+      output["maxUtilization"] = maxUtilization;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of Backend */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A BackendService resource. This resource defines a group of backend VMs together with their serving capacity. */
+class BackendService {
+
+  /** The list of backends that serve this BackendService. */
+  core.List<Backend> backends;
+
+  /** Creation timestamp in RFC3339 text format (output only). */
+  core.String creationTimestamp;
+
+  /** An optional textual description of the resource; provided by the client when the resource is created. */
+  core.String description;
+
+  /** Fingerprint of this resource. A hash of the contents stored in this object. This field is used in optimistic locking. This field will be ignored when inserting a BackendService. An up-to-date fingerprint must be provided in order to update the BackendService. */
+  core.String fingerprint;
+
+  /** The list of URLs to the HttpHealthCheck resource for health checking this BackendService. Currently at most one health check can be specified, and a health check is required. */
+  core.List<core.String> healthChecks;
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** Type of the resource. */
+  core.String kind;
+
+  /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
+  core.String name;
+
+  /** The TCP port to connect on the backend. The default value is 80. */
+  core.int port;
+
+  /** Name of backend port. The same name should appear in the resource views referenced by this service. Required. */
+  core.String portName;
+
+  core.String protocol;
+
+  /** Server defined URL for the resource (output only). */
+  core.String selfLink;
+
+  /** How many seconds to wait for the backend before considering it a failed request. Default is 30 seconds. */
+  core.int timeoutSec;
+
+  /** Create new BackendService from JSON data */
+  BackendService.fromJson(core.Map json) {
+    if (json.containsKey("backends")) {
+      backends = json["backends"].map((backendsItem) => new Backend.fromJson(backendsItem)).toList();
+    }
+    if (json.containsKey("creationTimestamp")) {
+      creationTimestamp = json["creationTimestamp"];
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("fingerprint")) {
+      fingerprint = json["fingerprint"];
+    }
+    if (json.containsKey("healthChecks")) {
+      healthChecks = json["healthChecks"].toList();
+    }
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("port")) {
+      port = json["port"];
+    }
+    if (json.containsKey("portName")) {
+      portName = json["portName"];
+    }
+    if (json.containsKey("protocol")) {
+      protocol = json["protocol"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+    if (json.containsKey("timeoutSec")) {
+      timeoutSec = json["timeoutSec"];
+    }
+  }
+
+  /** Create JSON Object for BackendService */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (backends != null) {
+      output["backends"] = backends.map((backendsItem) => backendsItem.toJson()).toList();
+    }
+    if (creationTimestamp != null) {
+      output["creationTimestamp"] = creationTimestamp;
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (fingerprint != null) {
+      output["fingerprint"] = fingerprint;
+    }
+    if (healthChecks != null) {
+      output["healthChecks"] = healthChecks.toList();
+    }
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (port != null) {
+      output["port"] = port;
+    }
+    if (portName != null) {
+      output["portName"] = portName;
+    }
+    if (protocol != null) {
+      output["protocol"] = protocol;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+    if (timeoutSec != null) {
+      output["timeoutSec"] = timeoutSec;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of BackendService */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class BackendServiceGroupHealth {
+
+  core.List<HealthStatus> healthStatus;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** Create new BackendServiceGroupHealth from JSON data */
+  BackendServiceGroupHealth.fromJson(core.Map json) {
+    if (json.containsKey("healthStatus")) {
+      healthStatus = json["healthStatus"].map((healthStatusItem) => new HealthStatus.fromJson(healthStatusItem)).toList();
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+  }
+
+  /** Create JSON Object for BackendServiceGroupHealth */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (healthStatus != null) {
+      output["healthStatus"] = healthStatus.map((healthStatusItem) => healthStatusItem.toJson()).toList();
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of BackendServiceGroupHealth */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Contains a list of BackendService resources. */
+class BackendServiceList {
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** The BackendService resources. */
+  core.List<BackendService> items;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** A token used to continue a truncated list request (output only). */
+  core.String nextPageToken;
+
+  /** Server defined URL for this resource (output only). */
+  core.String selfLink;
+
+  /** Create new BackendServiceList from JSON data */
+  BackendServiceList.fromJson(core.Map json) {
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("items")) {
+      items = json["items"].map((itemsItem) => new BackendService.fromJson(itemsItem)).toList();
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("nextPageToken")) {
+      nextPageToken = json["nextPageToken"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for BackendServiceList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (items != null) {
+      output["items"] = items.map((itemsItem) => itemsItem.toJson()).toList();
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (nextPageToken != null) {
+      output["nextPageToken"] = nextPageToken;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of BackendServiceList */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -644,6 +982,9 @@ class Disk {
   /** Type of the resource. */
   core.String kind;
 
+  /** Public visible licenses. */
+  core.List<core.String> licenses;
+
   /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
   core.String name;
 
@@ -671,6 +1012,9 @@ class Disk {
   /** The status of disk creation (output only). */
   core.String status;
 
+  /** URL of the disk type resource describing which disk type to use to create the disk; provided by the client when the disk is created. */
+  core.String type;
+
   /** URL of the zone where the disk resides (output only). */
   core.String zone;
 
@@ -687,6 +1031,9 @@ class Disk {
     }
     if (json.containsKey("kind")) {
       kind = json["kind"];
+    }
+    if (json.containsKey("licenses")) {
+      licenses = json["licenses"].toList();
     }
     if (json.containsKey("name")) {
       name = json["name"];
@@ -715,6 +1062,9 @@ class Disk {
     if (json.containsKey("status")) {
       status = json["status"];
     }
+    if (json.containsKey("type")) {
+      type = json["type"];
+    }
     if (json.containsKey("zone")) {
       zone = json["zone"];
     }
@@ -735,6 +1085,9 @@ class Disk {
     }
     if (kind != null) {
       output["kind"] = kind;
+    }
+    if (licenses != null) {
+      output["licenses"] = licenses.toList();
     }
     if (name != null) {
       output["name"] = name;
@@ -762,6 +1115,9 @@ class Disk {
     }
     if (status != null) {
       output["status"] = status;
+    }
+    if (type != null) {
+      output["type"] = type;
     }
     if (zone != null) {
       output["zone"] = zone;
@@ -900,6 +1256,366 @@ class DiskList {
   }
 
   /** Return String representation of DiskList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A disk type resource. */
+class DiskType {
+
+  /** Creation timestamp in RFC3339 text format (output only). */
+  core.String creationTimestamp;
+
+  /** Server defined default disk size in gb (output only). */
+  core.int defaultDiskSizeGb;
+
+  /** The deprecation status associated with this disk type. */
+  DeprecationStatus deprecated;
+
+  /** An optional textual description of the resource. */
+  core.String description;
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** Type of the resource. */
+  core.String kind;
+
+  /** Name of the resource. */
+  core.String name;
+
+  /** Server defined URL for the resource (output only). */
+  core.String selfLink;
+
+  /** An optional textual descroption of the valid disk size, e.g., "10GB-10TB". */
+  core.String validDiskSize;
+
+  /** Url of the zone where the disk type resides (output only). */
+  core.String zone;
+
+  /** Create new DiskType from JSON data */
+  DiskType.fromJson(core.Map json) {
+    if (json.containsKey("creationTimestamp")) {
+      creationTimestamp = json["creationTimestamp"];
+    }
+    if (json.containsKey("defaultDiskSizeGb")) {
+      defaultDiskSizeGb = (json["defaultDiskSizeGb"] is core.String) ? core.int.parse(json["defaultDiskSizeGb"]) : json["defaultDiskSizeGb"];
+    }
+    if (json.containsKey("deprecated")) {
+      deprecated = new DeprecationStatus.fromJson(json["deprecated"]);
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+    if (json.containsKey("validDiskSize")) {
+      validDiskSize = json["validDiskSize"];
+    }
+    if (json.containsKey("zone")) {
+      zone = json["zone"];
+    }
+  }
+
+  /** Create JSON Object for DiskType */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (creationTimestamp != null) {
+      output["creationTimestamp"] = creationTimestamp;
+    }
+    if (defaultDiskSizeGb != null) {
+      output["defaultDiskSizeGb"] = defaultDiskSizeGb;
+    }
+    if (deprecated != null) {
+      output["deprecated"] = deprecated.toJson();
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+    if (validDiskSize != null) {
+      output["validDiskSize"] = validDiskSize;
+    }
+    if (zone != null) {
+      output["zone"] = zone;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskType */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class DiskTypeAggregatedList {
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** A map of scoped disk type lists. */
+  core.Map<core.String, DiskTypesScopedList> items;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** A token used to continue a truncated list request (output only). */
+  core.String nextPageToken;
+
+  /** Server defined URL for this resource (output only). */
+  core.String selfLink;
+
+  /** Create new DiskTypeAggregatedList from JSON data */
+  DiskTypeAggregatedList.fromJson(core.Map json) {
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("items")) {
+      items = _mapMap(json["items"], (itemsItem) => new DiskTypesScopedList.fromJson(itemsItem));
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("nextPageToken")) {
+      nextPageToken = json["nextPageToken"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for DiskTypeAggregatedList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (items != null) {
+      output["items"] = _mapMap(items, (itemsItem) => itemsItem.toJson());
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (nextPageToken != null) {
+      output["nextPageToken"] = nextPageToken;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskTypeAggregatedList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Contains a list of disk type resources. */
+class DiskTypeList {
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** The disk type resources. */
+  core.List<DiskType> items;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** A token used to continue a truncated list request (output only). */
+  core.String nextPageToken;
+
+  /** Server defined URL for this resource (output only). */
+  core.String selfLink;
+
+  /** Create new DiskTypeList from JSON data */
+  DiskTypeList.fromJson(core.Map json) {
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("items")) {
+      items = json["items"].map((itemsItem) => new DiskType.fromJson(itemsItem)).toList();
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("nextPageToken")) {
+      nextPageToken = json["nextPageToken"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for DiskTypeList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (items != null) {
+      output["items"] = items.map((itemsItem) => itemsItem.toJson()).toList();
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (nextPageToken != null) {
+      output["nextPageToken"] = nextPageToken;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskTypeList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class DiskTypesScopedList {
+
+  /** List of disk types contained in this scope. */
+  core.List<DiskType> diskTypes;
+
+  /** Informational warning which replaces the list of disk types when the list is empty. */
+  DiskTypesScopedListWarning warning;
+
+  /** Create new DiskTypesScopedList from JSON data */
+  DiskTypesScopedList.fromJson(core.Map json) {
+    if (json.containsKey("diskTypes")) {
+      diskTypes = json["diskTypes"].map((diskTypesItem) => new DiskType.fromJson(diskTypesItem)).toList();
+    }
+    if (json.containsKey("warning")) {
+      warning = new DiskTypesScopedListWarning.fromJson(json["warning"]);
+    }
+  }
+
+  /** Create JSON Object for DiskTypesScopedList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (diskTypes != null) {
+      output["diskTypes"] = diskTypes.map((diskTypesItem) => diskTypesItem.toJson()).toList();
+    }
+    if (warning != null) {
+      output["warning"] = warning.toJson();
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskTypesScopedList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Informational warning which replaces the list of disk types when the list is empty. */
+class DiskTypesScopedListWarning {
+
+  /** The warning type identifier for this warning. */
+  core.String code;
+
+  /** Metadata for this warning in 'key: value' format. */
+  core.List<DiskTypesScopedListWarningData> data;
+
+  /** Optional human-readable details for this warning. */
+  core.String message;
+
+  /** Create new DiskTypesScopedListWarning from JSON data */
+  DiskTypesScopedListWarning.fromJson(core.Map json) {
+    if (json.containsKey("code")) {
+      code = json["code"];
+    }
+    if (json.containsKey("data")) {
+      data = json["data"].map((dataItem) => new DiskTypesScopedListWarningData.fromJson(dataItem)).toList();
+    }
+    if (json.containsKey("message")) {
+      message = json["message"];
+    }
+  }
+
+  /** Create JSON Object for DiskTypesScopedListWarning */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (code != null) {
+      output["code"] = code;
+    }
+    if (data != null) {
+      output["data"] = data.map((dataItem) => dataItem.toJson()).toList();
+    }
+    if (message != null) {
+      output["message"] = message;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskTypesScopedListWarning */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class DiskTypesScopedListWarningData {
+
+  /** A key for the warning data. */
+  core.String key;
+
+  /** A warning data value corresponding to the key. */
+  core.String value;
+
+  /** Create new DiskTypesScopedListWarningData from JSON data */
+  DiskTypesScopedListWarningData.fromJson(core.Map json) {
+    if (json.containsKey("key")) {
+      key = json["key"];
+    }
+    if (json.containsKey("value")) {
+      value = json["value"];
+    }
+  }
+
+  /** Create JSON Object for DiskTypesScopedListWarningData */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (key != null) {
+      output["key"] = key;
+    }
+    if (value != null) {
+      output["value"] = value;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of DiskTypesScopedListWarningData */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -1251,10 +1967,10 @@ class FirewallList {
 /** A ForwardingRule resource. A ForwardingRule resource specifies which pool of target VMs to forward a packet to if it matches the given [IPAddress, IPProtocol, portRange] tuple. */
 class ForwardingRule {
 
-  /** Value of the reserved IP address that this forwarding rule is serving on behalf of. The address resource must live in the same region as the forwarding rule. If left empty (default value), an ephemeral IP will be assigned. */
+  /** Value of the reserved IP address that this forwarding rule is serving on behalf of. For global forwarding rules, the address must be a global IP; for regional forwarding rules, the address must live in the same region as the forwarding rule. If left empty (default value), an ephemeral IP from the same scope (global or regional) will be assigned. */
   core.String IPAddress;
 
-  /** The IP protocol to which this rule applies, valid options are 'TCP', 'UDP', 'ESP', 'AH' or 'SCTP' */
+  /** The IP protocol to which this rule applies, valid options are 'TCP', 'UDP', 'ESP', 'AH' or 'SCTP'. */
   core.String IPProtocol;
 
   /** Creation timestamp in RFC3339 text format (output only). */
@@ -1272,16 +1988,16 @@ class ForwardingRule {
   /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
   core.String name;
 
-  /** Applicable only when 'IPProtocol' is 'TCP', 'UDP' or 'SCTP', only packets addressed to ports in the specified range will be forwarded to 'target'. If 'portRange' is left empty (default value), all ports are forwarded. Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint port ranges. @pattern: \d+(?:-\d+)? */
+  /** Applicable only when 'IPProtocol' is 'TCP', 'UDP' or 'SCTP', only packets addressed to ports in the specified range will be forwarded to 'target'. If 'portRange' is left empty (default value), all ports are forwarded. Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint port ranges. */
   core.String portRange;
 
-  /** URL of the region where the forwarding rule resides (output only). */
+  /** URL of the region where the regional forwarding rule resides (output only). This field is not applicable to global forwarding rules. */
   core.String region;
 
   /** Server defined URL for the resource (output only). */
   core.String selfLink;
 
-  /** The URL of the target resource to receive the matched traffic. It must live in the same region as this forwarding rule. */
+  /** The URL of the target resource to receive the matched traffic. For regional forwarding rules, this target must live in the same region as the forwarding rule. For global forwarding rules, this target must be a global TargetHttpProxy resource. */
   core.String target;
 
   /** Create new ForwardingRule from JSON data */
@@ -1655,6 +2371,9 @@ class HealthStatus {
   /** The IP address represented by this resource. */
   core.String ipAddress;
 
+  /** The port on the instance. */
+  core.int port;
+
   /** Create new HealthStatus from JSON data */
   HealthStatus.fromJson(core.Map json) {
     if (json.containsKey("healthState")) {
@@ -1665,6 +2384,9 @@ class HealthStatus {
     }
     if (json.containsKey("ipAddress")) {
       ipAddress = json["ipAddress"];
+    }
+    if (json.containsKey("port")) {
+      port = json["port"];
     }
   }
 
@@ -1681,11 +2403,60 @@ class HealthStatus {
     if (ipAddress != null) {
       output["ipAddress"] = ipAddress;
     }
+    if (port != null) {
+      output["port"] = port;
+    }
 
     return output;
   }
 
   /** Return String representation of HealthStatus */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A host-matching rule for a URL. If matched, will use the named PathMatcher to select the BackendService. */
+class HostRule {
+
+  core.String description;
+
+  /** The list of host patterns to match. They must be valid hostnames except that they may start with *. or *-. The * acts like a glob and will match any string of atoms (separated by .s and -s) to the left. */
+  core.List<core.String> hosts;
+
+  /** The name of the PathMatcher to match the path portion of the URL, if the this HostRule matches the URL's host portion. */
+  core.String pathMatcher;
+
+  /** Create new HostRule from JSON data */
+  HostRule.fromJson(core.Map json) {
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("hosts")) {
+      hosts = json["hosts"].toList();
+    }
+    if (json.containsKey("pathMatcher")) {
+      pathMatcher = json["pathMatcher"];
+    }
+  }
+
+  /** Create JSON Object for HostRule */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (hosts != null) {
+      output["hosts"] = hosts.toList();
+    }
+    if (pathMatcher != null) {
+      output["pathMatcher"] = pathMatcher;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of HostRule */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -1916,6 +2687,9 @@ class Image {
   /** Type of the resource. */
   core.String kind;
 
+  /** Public visible licenses. */
+  core.List<core.String> licenses;
+
   /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
   core.String name;
 
@@ -1924,6 +2698,12 @@ class Image {
 
   /** Server defined URL for the resource (output only). */
   core.String selfLink;
+
+  /** The source disk used to create this image. Once the source disk has been deleted from the system, this field will be cleared, and will not be set even if a disk with the same name has been re-created. */
+  core.String sourceDisk;
+
+  /** The 'id' value of the disk used to create this image. This value may be used to determine whether the image was taken from the current or a previous instance of a given disk name. */
+  core.String sourceDiskId;
 
   /** Must be "RAW"; provided by the client when the disk image is created. */
   core.String sourceType;
@@ -1954,6 +2734,9 @@ class Image {
     if (json.containsKey("kind")) {
       kind = json["kind"];
     }
+    if (json.containsKey("licenses")) {
+      licenses = json["licenses"].toList();
+    }
     if (json.containsKey("name")) {
       name = json["name"];
     }
@@ -1962,6 +2745,12 @@ class Image {
     }
     if (json.containsKey("selfLink")) {
       selfLink = json["selfLink"];
+    }
+    if (json.containsKey("sourceDisk")) {
+      sourceDisk = json["sourceDisk"];
+    }
+    if (json.containsKey("sourceDiskId")) {
+      sourceDiskId = json["sourceDiskId"];
     }
     if (json.containsKey("sourceType")) {
       sourceType = json["sourceType"];
@@ -1996,6 +2785,9 @@ class Image {
     if (kind != null) {
       output["kind"] = kind;
     }
+    if (licenses != null) {
+      output["licenses"] = licenses.toList();
+    }
     if (name != null) {
       output["name"] = name;
     }
@@ -2004,6 +2796,12 @@ class Image {
     }
     if (selfLink != null) {
       output["selfLink"] = selfLink;
+    }
+    if (sourceDisk != null) {
+      output["sourceDisk"] = sourceDisk;
+    }
+    if (sourceDiskId != null) {
+      output["sourceDiskId"] = sourceDiskId;
     }
     if (sourceType != null) {
       output["sourceType"] = sourceType;
@@ -2578,6 +3376,62 @@ class InstancesScopedListWarningData {
   }
 
   /** Return String representation of InstancesScopedListWarningData */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A license resource. */
+class License {
+
+  /** If true, the customer will be charged license fee for running software that contains this license on an instance. */
+  core.bool chargesUseFee;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
+  core.String name;
+
+  /** Server defined URL for the resource (output only). */
+  core.String selfLink;
+
+  /** Create new License from JSON data */
+  License.fromJson(core.Map json) {
+    if (json.containsKey("chargesUseFee")) {
+      chargesUseFee = json["chargesUseFee"];
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for License */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (chargesUseFee != null) {
+      output["chargesUseFee"] = chargesUseFee;
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of License */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -3929,6 +4783,99 @@ class OperationsScopedListWarningData {
 
 }
 
+/** A matcher for the path portion of the URL. The BackendService from the longest-matched rule will serve the URL. If no rule was matched, the default_service will be used. */
+class PathMatcher {
+
+  /** The URL to the BackendService resource. This will be used if none of the 'pathRules' defined by this PathMatcher is met by the URL's path portion. */
+  core.String defaultService;
+
+  core.String description;
+
+  /** The name to which this PathMatcher is referred by the HostRule. */
+  core.String name;
+
+  /** The list of path rules. */
+  core.List<PathRule> pathRules;
+
+  /** Create new PathMatcher from JSON data */
+  PathMatcher.fromJson(core.Map json) {
+    if (json.containsKey("defaultService")) {
+      defaultService = json["defaultService"];
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("pathRules")) {
+      pathRules = json["pathRules"].map((pathRulesItem) => new PathRule.fromJson(pathRulesItem)).toList();
+    }
+  }
+
+  /** Create JSON Object for PathMatcher */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (defaultService != null) {
+      output["defaultService"] = defaultService;
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (pathRules != null) {
+      output["pathRules"] = pathRules.map((pathRulesItem) => pathRulesItem.toJson()).toList();
+    }
+
+    return output;
+  }
+
+  /** Return String representation of PathMatcher */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A path-matching rule for a URL. If matched, will use the specified BackendService to handle the traffic arriving at this URL. */
+class PathRule {
+
+  /** The list of path patterns to match. Each must start with / and the only place a * is allowed is at the end following a /. The string fed to the path matcher does not include any text after the first ? or #, and those chars are not allowed here. */
+  core.List<core.String> paths;
+
+  /** The URL of the BackendService resource if this rule is matched. */
+  core.String service;
+
+  /** Create new PathRule from JSON data */
+  PathRule.fromJson(core.Map json) {
+    if (json.containsKey("paths")) {
+      paths = json["paths"].toList();
+    }
+    if (json.containsKey("service")) {
+      service = json["service"];
+    }
+  }
+
+  /** Create JSON Object for PathRule */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (paths != null) {
+      output["paths"] = paths.toList();
+    }
+    if (service != null) {
+      output["service"] = service;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of PathRule */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
 /** A project resource. Projects can be created only in the APIs Console. Unless marked otherwise, values can only be modified in the console. */
 class Project {
 
@@ -4248,6 +5195,34 @@ class RegionList {
   }
 
   /** Return String representation of RegionList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class ResourceGroupReference {
+
+  /** A URI referencing one of the resource views listed in the backend service. */
+  core.String group;
+
+  /** Create new ResourceGroupReference from JSON data */
+  ResourceGroupReference.fromJson(core.Map json) {
+    if (json.containsKey("group")) {
+      group = json["group"];
+    }
+  }
+
+  /** Create JSON Object for ResourceGroupReference */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (group != null) {
+      output["group"] = group;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of ResourceGroupReference */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -4696,6 +5671,9 @@ class Snapshot {
   /** Type of the resource. */
   core.String kind;
 
+  /** Public visible licenses. */
+  core.List<core.String> licenses;
+
   /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
   core.String name;
 
@@ -4733,6 +5711,9 @@ class Snapshot {
     }
     if (json.containsKey("kind")) {
       kind = json["kind"];
+    }
+    if (json.containsKey("licenses")) {
+      licenses = json["licenses"].toList();
     }
     if (json.containsKey("name")) {
       name = json["name"];
@@ -4775,6 +5756,9 @@ class Snapshot {
     }
     if (kind != null) {
       output["kind"] = kind;
+    }
+    if (licenses != null) {
+      output["licenses"] = licenses.toList();
     }
     if (name != null) {
       output["name"] = name;
@@ -4905,6 +5889,154 @@ class Tags {
   }
 
   /** Return String representation of Tags */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A TargetHttpProxy resource. This resource defines an HTTP proxy. */
+class TargetHttpProxy {
+
+  /** Creation timestamp in RFC3339 text format (output only). */
+  core.String creationTimestamp;
+
+  /** An optional textual description of the resource; provided by the client when the resource is created. */
+  core.String description;
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** Type of the resource. */
+  core.String kind;
+
+  /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
+  core.String name;
+
+  /** Server defined URL for the resource (output only). */
+  core.String selfLink;
+
+  /** URL to the UrlMap resource that defines the mapping from URL to the BackendService. */
+  core.String urlMap;
+
+  /** Create new TargetHttpProxy from JSON data */
+  TargetHttpProxy.fromJson(core.Map json) {
+    if (json.containsKey("creationTimestamp")) {
+      creationTimestamp = json["creationTimestamp"];
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+    if (json.containsKey("urlMap")) {
+      urlMap = json["urlMap"];
+    }
+  }
+
+  /** Create JSON Object for TargetHttpProxy */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (creationTimestamp != null) {
+      output["creationTimestamp"] = creationTimestamp;
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+    if (urlMap != null) {
+      output["urlMap"] = urlMap;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of TargetHttpProxy */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Contains a list of TargetHttpProxy resources. */
+class TargetHttpProxyList {
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** The TargetHttpProxy resources. */
+  core.List<TargetHttpProxy> items;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** A token used to continue a truncated list request (output only). */
+  core.String nextPageToken;
+
+  /** Server defined URL for this resource (output only). */
+  core.String selfLink;
+
+  /** Create new TargetHttpProxyList from JSON data */
+  TargetHttpProxyList.fromJson(core.Map json) {
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("items")) {
+      items = json["items"].map((itemsItem) => new TargetHttpProxy.fromJson(itemsItem)).toList();
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("nextPageToken")) {
+      nextPageToken = json["nextPageToken"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for TargetHttpProxyList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (items != null) {
+      output["items"] = items.map((itemsItem) => itemsItem.toJson()).toList();
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (nextPageToken != null) {
+      output["nextPageToken"] = nextPageToken;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of TargetHttpProxyList */
   core.String toString() => JSON.encode(this.toJson());
 
 }
@@ -5817,6 +6949,433 @@ class TargetReference {
   }
 
   /** Return String representation of TargetReference */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class TestFailure {
+
+  core.String actualService;
+
+  core.String expectedService;
+
+  core.String host;
+
+  core.String path;
+
+  /** Create new TestFailure from JSON data */
+  TestFailure.fromJson(core.Map json) {
+    if (json.containsKey("actualService")) {
+      actualService = json["actualService"];
+    }
+    if (json.containsKey("expectedService")) {
+      expectedService = json["expectedService"];
+    }
+    if (json.containsKey("host")) {
+      host = json["host"];
+    }
+    if (json.containsKey("path")) {
+      path = json["path"];
+    }
+  }
+
+  /** Create JSON Object for TestFailure */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (actualService != null) {
+      output["actualService"] = actualService;
+    }
+    if (expectedService != null) {
+      output["expectedService"] = expectedService;
+    }
+    if (host != null) {
+      output["host"] = host;
+    }
+    if (path != null) {
+      output["path"] = path;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of TestFailure */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** A UrlMap resource. This resource defines the mapping from URL to the BackendService resource, based on the "longest-match" of the URL's host and path. */
+class UrlMap {
+
+  /** Creation timestamp in RFC3339 text format (output only). */
+  core.String creationTimestamp;
+
+  /** The URL of the BackendService resource if none of the hostRules match. */
+  core.String defaultService;
+
+  /** An optional textual description of the resource; provided by the client when the resource is created. */
+  core.String description;
+
+  /** Fingerprint of this resource. A hash of the contents stored in this object. This field is used in optimistic locking. This field will be ignored when inserting a UrlMap. An up-to-date fingerprint must be provided in order to update the UrlMap. */
+  core.String fingerprint;
+
+  /** The list of HostRules to use against the URL. */
+  core.List<HostRule> hostRules;
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** Type of the resource. */
+  core.String kind;
+
+  /** Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. */
+  core.String name;
+
+  /** The list of named PathMatchers to use against the URL. */
+  core.List<PathMatcher> pathMatchers;
+
+  /** Server defined URL for the resource (output only). */
+  core.String selfLink;
+
+  /** The list of expected URL mappings. Request to update this UrlMap will succeed only all of the test cases pass. */
+  core.List<UrlMapTest> tests;
+
+  /** Create new UrlMap from JSON data */
+  UrlMap.fromJson(core.Map json) {
+    if (json.containsKey("creationTimestamp")) {
+      creationTimestamp = json["creationTimestamp"];
+    }
+    if (json.containsKey("defaultService")) {
+      defaultService = json["defaultService"];
+    }
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("fingerprint")) {
+      fingerprint = json["fingerprint"];
+    }
+    if (json.containsKey("hostRules")) {
+      hostRules = json["hostRules"].map((hostRulesItem) => new HostRule.fromJson(hostRulesItem)).toList();
+    }
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("name")) {
+      name = json["name"];
+    }
+    if (json.containsKey("pathMatchers")) {
+      pathMatchers = json["pathMatchers"].map((pathMatchersItem) => new PathMatcher.fromJson(pathMatchersItem)).toList();
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+    if (json.containsKey("tests")) {
+      tests = json["tests"].map((testsItem) => new UrlMapTest.fromJson(testsItem)).toList();
+    }
+  }
+
+  /** Create JSON Object for UrlMap */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (creationTimestamp != null) {
+      output["creationTimestamp"] = creationTimestamp;
+    }
+    if (defaultService != null) {
+      output["defaultService"] = defaultService;
+    }
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (fingerprint != null) {
+      output["fingerprint"] = fingerprint;
+    }
+    if (hostRules != null) {
+      output["hostRules"] = hostRules.map((hostRulesItem) => hostRulesItem.toJson()).toList();
+    }
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (name != null) {
+      output["name"] = name;
+    }
+    if (pathMatchers != null) {
+      output["pathMatchers"] = pathMatchers.map((pathMatchersItem) => pathMatchersItem.toJson()).toList();
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+    if (tests != null) {
+      output["tests"] = tests.map((testsItem) => testsItem.toJson()).toList();
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMap */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Contains a list of UrlMap resources. */
+class UrlMapList {
+
+  /** Unique identifier for the resource; defined by the server (output only). */
+  core.String id;
+
+  /** The UrlMap resources. */
+  core.List<UrlMap> items;
+
+  /** Type of resource. */
+  core.String kind;
+
+  /** A token used to continue a truncated list request (output only). */
+  core.String nextPageToken;
+
+  /** Server defined URL for this resource (output only). */
+  core.String selfLink;
+
+  /** Create new UrlMapList from JSON data */
+  UrlMapList.fromJson(core.Map json) {
+    if (json.containsKey("id")) {
+      id = json["id"];
+    }
+    if (json.containsKey("items")) {
+      items = json["items"].map((itemsItem) => new UrlMap.fromJson(itemsItem)).toList();
+    }
+    if (json.containsKey("kind")) {
+      kind = json["kind"];
+    }
+    if (json.containsKey("nextPageToken")) {
+      nextPageToken = json["nextPageToken"];
+    }
+    if (json.containsKey("selfLink")) {
+      selfLink = json["selfLink"];
+    }
+  }
+
+  /** Create JSON Object for UrlMapList */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (id != null) {
+      output["id"] = id;
+    }
+    if (items != null) {
+      output["items"] = items.map((itemsItem) => itemsItem.toJson()).toList();
+    }
+    if (kind != null) {
+      output["kind"] = kind;
+    }
+    if (nextPageToken != null) {
+      output["nextPageToken"] = nextPageToken;
+    }
+    if (selfLink != null) {
+      output["selfLink"] = selfLink;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapList */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class UrlMapReference {
+
+  core.String urlMap;
+
+  /** Create new UrlMapReference from JSON data */
+  UrlMapReference.fromJson(core.Map json) {
+    if (json.containsKey("urlMap")) {
+      urlMap = json["urlMap"];
+    }
+  }
+
+  /** Create JSON Object for UrlMapReference */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (urlMap != null) {
+      output["urlMap"] = urlMap;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapReference */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Message for the expected URL mappings. */
+class UrlMapTest {
+
+  /** Description of this test case. */
+  core.String description;
+
+  /** Host portion of the URL. */
+  core.String host;
+
+  /** Path portion of the URL. */
+  core.String path;
+
+  /** Expected BackendService resource the given URL should be mapped to. */
+  core.String service;
+
+  /** Create new UrlMapTest from JSON data */
+  UrlMapTest.fromJson(core.Map json) {
+    if (json.containsKey("description")) {
+      description = json["description"];
+    }
+    if (json.containsKey("host")) {
+      host = json["host"];
+    }
+    if (json.containsKey("path")) {
+      path = json["path"];
+    }
+    if (json.containsKey("service")) {
+      service = json["service"];
+    }
+  }
+
+  /** Create JSON Object for UrlMapTest */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (description != null) {
+      output["description"] = description;
+    }
+    if (host != null) {
+      output["host"] = host;
+    }
+    if (path != null) {
+      output["path"] = path;
+    }
+    if (service != null) {
+      output["service"] = service;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapTest */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+/** Message representing the validation result for a UrlMap. */
+class UrlMapValidationResult {
+
+  core.List<core.String> loadErrors;
+
+  /** Whether the given UrlMap can be successfully loaded. If false, 'loadErrors' indicates the reasons. */
+  core.bool loadSucceeded;
+
+  core.List<TestFailure> testFailures;
+
+  /** If successfully loaded, this field indicates whether the test passed. If false, 'testFailures's indicate the reason of failure. */
+  core.bool testPassed;
+
+  /** Create new UrlMapValidationResult from JSON data */
+  UrlMapValidationResult.fromJson(core.Map json) {
+    if (json.containsKey("loadErrors")) {
+      loadErrors = json["loadErrors"].toList();
+    }
+    if (json.containsKey("loadSucceeded")) {
+      loadSucceeded = json["loadSucceeded"];
+    }
+    if (json.containsKey("testFailures")) {
+      testFailures = json["testFailures"].map((testFailuresItem) => new TestFailure.fromJson(testFailuresItem)).toList();
+    }
+    if (json.containsKey("testPassed")) {
+      testPassed = json["testPassed"];
+    }
+  }
+
+  /** Create JSON Object for UrlMapValidationResult */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (loadErrors != null) {
+      output["loadErrors"] = loadErrors.toList();
+    }
+    if (loadSucceeded != null) {
+      output["loadSucceeded"] = loadSucceeded;
+    }
+    if (testFailures != null) {
+      output["testFailures"] = testFailures.map((testFailuresItem) => testFailuresItem.toJson()).toList();
+    }
+    if (testPassed != null) {
+      output["testPassed"] = testPassed;
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapValidationResult */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class UrlMapsValidateRequest {
+
+  /** Content of the UrlMap to be validated. */
+  UrlMap resource;
+
+  /** Create new UrlMapsValidateRequest from JSON data */
+  UrlMapsValidateRequest.fromJson(core.Map json) {
+    if (json.containsKey("resource")) {
+      resource = new UrlMap.fromJson(json["resource"]);
+    }
+  }
+
+  /** Create JSON Object for UrlMapsValidateRequest */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (resource != null) {
+      output["resource"] = resource.toJson();
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapsValidateRequest */
+  core.String toString() => JSON.encode(this.toJson());
+
+}
+
+class UrlMapsValidateResponse {
+
+  UrlMapValidationResult result;
+
+  /** Create new UrlMapsValidateResponse from JSON data */
+  UrlMapsValidateResponse.fromJson(core.Map json) {
+    if (json.containsKey("result")) {
+      result = new UrlMapValidationResult.fromJson(json["result"]);
+    }
+  }
+
+  /** Create JSON Object for UrlMapsValidateResponse */
+  core.Map toJson() {
+    var output = new core.Map();
+
+    if (result != null) {
+      output["result"] = result.toJson();
+    }
+
+    return output;
+  }
+
+  /** Return String representation of UrlMapsValidateResponse */
   core.String toString() => JSON.encode(this.toJson());
 
 }

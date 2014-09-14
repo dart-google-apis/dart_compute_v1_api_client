@@ -9,13 +9,18 @@ abstract class Client extends ClientBase {
   //
 
   AddressesResource_ get addresses => new AddressesResource_(this);
+  BackendServicesResource_ get backendServices => new BackendServicesResource_(this);
+  DiskTypesResource_ get diskTypes => new DiskTypesResource_(this);
   DisksResource_ get disks => new DisksResource_(this);
   FirewallsResource_ get firewalls => new FirewallsResource_(this);
   ForwardingRulesResource_ get forwardingRules => new ForwardingRulesResource_(this);
+  GlobalAddressesResource_ get globalAddresses => new GlobalAddressesResource_(this);
+  GlobalForwardingRulesResource_ get globalForwardingRules => new GlobalForwardingRulesResource_(this);
   GlobalOperationsResource_ get globalOperations => new GlobalOperationsResource_(this);
   HttpHealthChecksResource_ get httpHealthChecks => new HttpHealthChecksResource_(this);
   ImagesResource_ get images => new ImagesResource_(this);
   InstancesResource_ get instances => new InstancesResource_(this);
+  LicensesResource_ get licenses => new LicensesResource_(this);
   MachineTypesResource_ get machineTypes => new MachineTypesResource_(this);
   NetworksResource_ get networks => new NetworksResource_(this);
   ProjectsResource_ get projects => new ProjectsResource_(this);
@@ -23,8 +28,10 @@ abstract class Client extends ClientBase {
   RegionsResource_ get regions => new RegionsResource_(this);
   RoutesResource_ get routes => new RoutesResource_(this);
   SnapshotsResource_ get snapshots => new SnapshotsResource_(this);
+  TargetHttpProxiesResource_ get targetHttpProxies => new TargetHttpProxiesResource_(this);
   TargetInstancesResource_ get targetInstances => new TargetInstancesResource_(this);
   TargetPoolsResource_ get targetPools => new TargetPoolsResource_(this);
+  UrlMapsResource_ get urlMaps => new UrlMapsResource_(this);
   ZoneOperationsResource_ get zoneOperations => new ZoneOperationsResource_(this);
   ZonesResource_ get zones => new ZonesResource_(this);
 
